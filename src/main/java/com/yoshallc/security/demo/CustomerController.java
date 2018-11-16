@@ -3,8 +3,6 @@ package com.yoshallc.security.demo;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.sun.org.apache.xml.internal.security.algorithms.SignatureAlgorithm;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CustomerController {
 
+    private CustomerService customerService;
+
+    public CustomerController(CustomerService customerService){
+
+        this.customerService = customerService;
+    }
+
     @GetMapping("/home")
     public String home(){
 
@@ -20,13 +25,13 @@ public class CustomerController {
     }
 
     @GetMapping("/hello")
-    public String hello(){
+    public CustomerResponse hello(){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomerResponse customerResponse = new CustomerResponse();
+        customerResponse.setLastName(customerService.makeUpperCase("patel"));
 
-        System.out.println(authentication.getPrincipal().toString());
-
-        return "Hello";
+        return customerResponse;
     }
 
     @GetMapping("/token")
